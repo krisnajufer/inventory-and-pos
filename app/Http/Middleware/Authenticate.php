@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use F9Web\ApiResponseHelpers;
+use Illuminate\Http\JsonResponse;
 
 class Authenticate extends Middleware
 {
@@ -12,10 +14,16 @@ class Authenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
+    use ApiResponseHelpers;
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             return route('login');
         }
+    }
+
+    protected function unauthenticated($request, array $guards): JsonResponse
+    {
+        abort($this->respondUnAuthenticated("Unauthenticated, please login first"));
     }
 }
