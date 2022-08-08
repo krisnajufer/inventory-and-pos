@@ -9,6 +9,7 @@ use F9Web\ApiResponseHelpers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -47,17 +48,23 @@ class UserController extends Controller
             $check_email = Users::where('email', $request->email)->first();
             if (empty($check_username)) {
                 if (empty($check_email)) {
-                    $users = Users::create([
-                        'user_id' => $user_id,
-                        'slug' => Str::random(16),
-                        'username' => $request->username,
-                        'email' => $request->email,
-                        'password' => bcrypt($request->password),
-                        'type' => $request->type,
-                        'status' => $request->status
-                    ]);
-
-                    return $this->respondCreated(['user' => $users]);
+                    DB::beginTransaction();
+                    try {
+                        $users = Users::create([
+                            'user_id' => $user_id,
+                            'slug' => Str::random(16),
+                            'username' => $request->username,
+                            'email' => $request->email,
+                            'password' => bcrypt($request->password),
+                            'type' => $request->type,
+                            'status' => $request->status
+                        ]);
+                        DB::commit();
+                        return $this->respondCreated(['user' => $users]);
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        return $this->respondError($e->getMessage());
+                    }
                 } else {
                     return $this->respondError("Email already exist");
                 }
@@ -98,13 +105,21 @@ class UserController extends Controller
                     if (!empty($check_email)) {
                         return $this->respondError("Email already exist");
                     } else {
-                        $users->username = $request->username;
-                        $users->email = $request->email;
-                        $users->password = $request->password;
-                        $users->type = $request->type;
-                        $users->status = $request->status;
-                        $users->save();
-                        return $this->respondWithSuccess(['user' => $users]);
+                        DB::beginTransaction();
+                        try {
+                            $users->username = $request->username;
+                            $users->email = $request->email;
+                            $users->password = $request->password;
+                            $users->type = $request->type;
+                            $users->status = $request->status;
+                            $users->save();
+
+                            DB::commit();
+                            return $this->respondWithSuccess(['user' => $users]);
+                        } catch (\Exception $e) {
+                            DB::rollBack();
+                            return $this->respondError($e->getMessage());
+                        }
                     }
                 }
             }
@@ -127,8 +142,15 @@ class UserController extends Controller
     {
         $users = Users::where('slug', $slug)->first();
         if (!empty($users)) {
-            $users->delete();
-            return $this->respondOk("Successfully deleted data user");
+            DB::beginTransaction();
+            try {
+                $users->delete();
+                DB::commit();
+                return $this->respondOk("Successfully deleted data user");
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return $this->respondError($e->getMessage());
+            }
         } else {
             return $this->respondNotFound("Data user not found or not exist");
         }
