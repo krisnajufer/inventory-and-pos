@@ -18,8 +18,8 @@ return new class extends Migration
             $table->primary('employee_id');
             $table->string('slug');
             $table->string('user_id');
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('firstname');
+            $table->string('lastname');
             $table->text('employee_address');
             $table->string('employee_city');
             $table->date('date_of_birth');

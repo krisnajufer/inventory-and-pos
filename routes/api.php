@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+require __DIR__ . '/collections/auth.api.php';
 require __DIR__ . '/collections/user.api.php';
+require __DIR__ . '/collections/employee.api.php';
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         $users = Users::all();
 
-        return $this->respondWithSuccess(['user' => $users]);
+        return $this->respondWithSuccess(['users' => $users]);
     }
 
     public function post(Request $request): JsonResponse
@@ -60,7 +60,7 @@ class UserController extends Controller
                             'status' => $request->status
                         ]);
                         DB::commit();
-                        return $this->respondCreated(['user' => $users]);
+                        return $this->respondCreated(['users' => $users]);
                     } catch (\Exception $e) {
                         DB::rollBack();
                         return $this->respondError($e->getMessage());
@@ -115,7 +115,7 @@ class UserController extends Controller
                             $users->save();
 
                             DB::commit();
-                            return $this->respondWithSuccess(['user' => $users]);
+                            return $this->respondWithSuccess(['users' => $users]);
                         } catch (\Exception $e) {
                             DB::rollBack();
                             return $this->respondError($e->getMessage());
@@ -124,7 +124,7 @@ class UserController extends Controller
                 }
             }
         } else {
-            return $this->respondNotFound("Data user not found or not exist");
+            return $this->respondNotFound("user not found or not exist");
         }
     }
 
@@ -132,9 +132,9 @@ class UserController extends Controller
     {
         $users = Users::where('slug', $slug)->first();
         if (!empty($users)) {
-            return $this->respondWithSuccess(['user' => $users]);
+            return $this->respondWithSuccess(['users' => $users]);
         } else {
-            return $this->respondNotFound("Data user not found or not exist");
+            return $this->respondNotFound("user not found or not exist");
         }
     }
 
@@ -146,13 +146,13 @@ class UserController extends Controller
             try {
                 $users->delete();
                 DB::commit();
-                return $this->respondOk("Successfully deleted data user");
+                return $this->respondOk("Successfully deleted user");
             } catch (\Exception $e) {
                 DB::rollBack();
                 return $this->respondError($e->getMessage());
             }
         } else {
-            return $this->respondNotFound("Data user not found or not exist");
+            return $this->respondNotFound("user not found or not exist");
         }
     }
 }
