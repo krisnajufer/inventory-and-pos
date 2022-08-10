@@ -104,7 +104,9 @@ class EmployeeController extends Controller
 
     public function detail($slug): JsonResponse
     {
-        $employees = Employees::where('slug', $slug)->first();
+        $employees = Employees::join('users as u', 'employees.user_id', '=', 'u.user_id')
+            ->where('employees.slug', $slug)
+            ->first();
         if (!empty($employees)) {
             return $this->respondWithSuccess(['employees' => $employees]);
         } else {
