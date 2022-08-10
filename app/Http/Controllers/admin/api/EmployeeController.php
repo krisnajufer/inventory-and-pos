@@ -195,4 +195,24 @@ class EmployeeController extends Controller
             return $this->respondNotFound("Employee not found or not exist");
         }
     }
+
+    public function delete($slug): JsonResponse
+    {
+        $employees = Employees::where('slug', $slug)->first();
+        if (!empty($employees)) {
+            $users = Users::where('user_id', $employees->user_id)->first();
+            DB::beginTransaction();
+            try {
+                $users->delete();
+                $employees->delete();
+                DB::commit();
+                return $this->respondOk("Successfully deleted employee");
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return $this->respondError($e->getMessage());
+            }
+        } else {
+            return $this->respondNotFound("Employee not found or not exist");
+        }
+    }
 }
