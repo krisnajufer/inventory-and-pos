@@ -215,4 +215,13 @@ class EmployeeController extends Controller
             return $this->respondNotFound("Employee not found or not exist");
         }
     }
+
+    public function user(Request $request): JsonResponse
+    {
+        $users = $request->user();
+        $employees = Employees::join('users as u', 'employees.user_id', '=', 'u.user_id')
+            ->where('employees.user_id', $users->user_id)
+            ->first();
+        return $this->respondWithSuccess(['employees' => $employees]);
+    }
 }
