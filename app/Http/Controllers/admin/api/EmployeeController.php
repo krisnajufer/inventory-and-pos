@@ -22,9 +22,9 @@ class EmployeeController extends Controller
         return $this->respondWithSuccess(['employees' => $employees]);
     }
 
-    public function post(Request $request): JsonResponse
+    public function validatorHelper($request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request, [
             'firstname' => 'required',
             'lastname' => 'required',
             'employee_address' => 'required',
@@ -39,6 +39,15 @@ class EmployeeController extends Controller
             'type' => 'required',
             'status' => 'required'
         ]);
+
+        return $validator;
+    }
+
+    public function post(Request $request): JsonResponse
+    {
+        $request_all = $request->all();
+        $validator = $this->validatorHelper($request_all);
+
         if ($validator->fails()) {
             $message = $validator->errors();
             $message = str_replace(array(
@@ -116,21 +125,8 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $slug)
     {
-        $validator = Validator::make($request->all(), [
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'employee_address' => 'required',
-            'employee_city' => 'required',
-            'date_of_birth' => 'required',
-            'gender' => 'required',
-            'phone_number' => 'required',
-            'role' => 'required',
-            'username' => 'required',
-            'email' => 'required',
-            'password' => 'required|min:8',
-            'type' => 'required',
-            'status' => 'required'
-        ]);
+        $request_all = $request->all();
+        $validator = $this->validatorHelper($request_all);
 
         $employees = Employees::where('slug', $slug)->first();
         if (!empty($employees)) {
