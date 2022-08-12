@@ -7,6 +7,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/warehouse')->group(function () {
         Route::controller(WarehousesController::class)->group(function () {
             Route::get('/get', 'get');
+            Route::post('/post', 'post');
         });
     });
 });
