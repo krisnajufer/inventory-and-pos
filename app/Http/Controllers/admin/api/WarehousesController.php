@@ -62,4 +62,14 @@ class WarehousesController extends Controller
             }
         }
     }
+
+    public function detail($slug): JsonResponse
+    {
+        $warehouses = Warehouses::where('slug', $slug)->first();
+        if (!empty($warehouses)) {
+            return $this->respondWithSuccess(['warehouses' => $warehouses]);
+        } else {
+            return $this->respondNotFound("Warehouse not found or not exist");
+        }
+    }
 }

@@ -8,6 +8,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(WarehousesController::class)->group(function () {
             Route::get('/get', 'get');
             Route::post('/post', 'post');
+            Route::get('/detail/{slug}', 'detail');
         });
     });
 });
