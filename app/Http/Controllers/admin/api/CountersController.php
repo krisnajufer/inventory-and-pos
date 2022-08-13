@@ -32,4 +32,45 @@ class CountersController extends Controller
 
         return $validator;
     }
+
+    public function post(Request $request): JsonResponse
+    {
+        $request_all = $request->all();
+        $validator = $this->validatorHelper($request_all);
+
+        if ($validator->fails()) {
+            $message = $validator->errors();
+            $message = str_replace(array(
+                '\'', '"',
+                ',', '{', '[', ']', '}'
+            ), '', $message);
+            return $this->respondError($message);
+        } else {
+            $check_counter_name = Counters::where('counter_name', $request->counter_name)->first();
+            $counter_id = Counters::generatecounterId();
+            if (empty($check_counter_name)) {
+                DB::beginTransaction();
+                try {
+                    $counters = new Counters();
+                    $counters->counter_id = $counter_id;
+                    $counters->slug = Str::random(16);
+                    $counters->counter_name = $request->counter_name;
+                    $counters->counter_address = $request->counter_address;
+                    $counters->counter_city = $request->counter_city;
+                    $counters->counter_status = $request->counter_status;
+
+                    $counters->save();
+                    DB::commit();
+                    return $this->respondCreated(['counters' => $counters]);
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return $this->respondError($e->getMessage());
+                }
+            } else {
+                return $this->respondError("Counter Name already exist");
+            }
+        }
+    }
+
+    
 }

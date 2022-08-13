@@ -7,6 +7,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/counter')->group(function () {
         Route::controller(CountersController::class)->group(function () {
             Route::get('/get', 'get');
+            Route::post('/post', 'post');
         });
     });
 });
