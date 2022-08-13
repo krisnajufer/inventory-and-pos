@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin\Warehouses;
-use Exception;
 
 class WarehousesController extends Controller
 {
@@ -134,7 +133,7 @@ class WarehousesController extends Controller
                 $warehouses->delete();
                 DB::commit();
                 return $this->respondOk("Successfully deleted Warehouse");
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 DB::rollBack();
                 return $this->respondError($e->getMessage());
             }
