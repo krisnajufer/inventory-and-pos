@@ -19,6 +19,7 @@ require __DIR__ . '/collections/user.api.php';
 require __DIR__ . '/collections/employee.api.php';
 require __DIR__ . '/collections/warehouse.api.php';
 require __DIR__ . '/collections/counter.api.php';
+require __DIR__ . '/collections/work_schedule.api.php';
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
