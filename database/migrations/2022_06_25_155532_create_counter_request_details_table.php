@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('counter_request_details', function (Blueprint $table) {
             $table->id();
-            $table->char('counter_request_id', 18);
+            $table->char('counter_request_id', 19);
             $table->char('item_id', 5);
             $table->string('source');
             $table->char('counter_id', 5)->nullable();

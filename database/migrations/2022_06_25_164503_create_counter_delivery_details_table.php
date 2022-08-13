@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('counter_delivery_details', function (Blueprint $table) {
             $table->id();
-            $table->char('counter_delivery_id', 18);
+            $table->char('counter_delivery_id', 19);
             $table->char('item_id', 5);
             $table->integer('counter_delivery_quantity');
             $table->string('counter_delivery_receipt');

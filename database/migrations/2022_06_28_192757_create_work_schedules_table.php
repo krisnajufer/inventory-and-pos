@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('work_schedules', function (Blueprint $table) {
-            $table->char("work_schedule_id", 15);
+            $table->char("work_schedule_id", 19);
             $table->primary("work_schedule_id");
             $table->char("employee_id", 5);
             $table->char("warehouse_id", 5)->nullable();

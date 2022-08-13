@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('warehouse_delivery_details', function (Blueprint $table) {
             $table->id();
-            $table->char('warehouse_delivery_id', 18);
+            $table->char('warehouse_delivery_id', 19);
             $table->char('item_id', 5);
             $table->integer('warehouse_delivery_quantity');
             $table->string('warehouse_delivery_receipt');

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('warehouse_deliveries', function (Blueprint $table) {
-            $table->char('warehouse_delivery_id', 18);
+            $table->char('warehouse_delivery_id', 19);
             $table->primary('warehouse_delivery_id');
             $table->string('slug');
             $table->char('warehouse_request_id', 18);

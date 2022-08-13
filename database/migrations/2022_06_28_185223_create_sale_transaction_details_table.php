@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('sale_transaction_details', function (Blueprint $table) {
             $table->id();
-            $table->char("sale_transaction_id", 18);
+            $table->char("sale_transaction_id", 19);
             $table->char("counter_item_id", 10);
             $table->integer("sale_transaction_quantity");
             $table->integer("subtotal");

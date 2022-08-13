@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sale_transactions', function (Blueprint $table) {
-            $table->char("sale_transaction_id", 18);
+            $table->char("sale_transaction_id", 19);
             $table->primary("sale_transaction_id");
             $table->char("counter_id", 5);
             $table->dateTime("sale_transaction_date");
