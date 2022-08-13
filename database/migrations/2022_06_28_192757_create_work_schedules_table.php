@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('work_schedules', function (Blueprint $table) {
             $table->char("work_schedule_id", 19);
             $table->primary("work_schedule_id");
+            $table->string("slug");
             $table->char("employee_id", 5);
             $table->char("warehouse_id", 5)->nullable();
             $table->char("counter_id", 5)->nullable();

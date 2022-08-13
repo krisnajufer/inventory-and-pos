@@ -16,7 +16,7 @@ class WorkSchedulesController extends Controller
     use ApiResponseHelpers;
     public function get(): JsonResponse
     {
-        $work_schedules = WorkSchedules::select('work_schedules.work_schedule_id', DB::raw("CONCAT(e.firstname,' ',e.lastname) AS fullname"), "w.warehouse_name", "c.counter_name", 'work_schedules.working_date')
+        $work_schedules = WorkSchedules::select('work_schedules.work_schedule_id', 'work_schedules.slug', DB::raw("CONCAT(e.firstname,' ',e.lastname) AS fullname"), "w.warehouse_name", "c.counter_name", 'work_schedules.working_date')
             ->leftjoin('employees as e', 'work_schedules.employee_id', '=', 'e.employee_id')
             ->leftjoin('warehouses as w', 'work_schedules.warehouse_id', '=', 'w.warehouse_id')
             ->leftjoin('counters as c', 'work_schedules.counter_id', '=', 'c.counter_id')
@@ -59,6 +59,7 @@ class WorkSchedulesController extends Controller
                     try {
                         $work_schedules = new WorkSchedules();
                         $work_schedules->work_schedule_id = $work_schedule_id;
+                        $work_schedules->slug = Str::random(16);
                         $work_schedules->employee_id = $request->employee_id;
                         $work_schedules->warehouse_id = $request->work_place_id;
                         $work_schedules->working_date = $request->working_date;
@@ -89,5 +90,10 @@ class WorkSchedulesController extends Controller
                 }
             }
         }
+    }
+
+    public function update()
+    {
+        # code...
     }
 }
