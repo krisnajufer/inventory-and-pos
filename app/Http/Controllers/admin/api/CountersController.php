@@ -81,4 +81,46 @@ class CountersController extends Controller
             return $this->respondNotFound("Counter not found or not exist");
         }
     }
+
+    public function update(Request $request, $slug): JsonResponse
+    {
+        // $request_all = $request->all();
+        $validator = $this->validatorHelper($request->all());
+
+        $counters = Counters::where('slug', $slug)->first();
+        if (!empty($counters)) {
+            if ($validator->fails()) {
+                $message = $validator->errors();
+                $message = str_replace(array(
+                    '\'', '"',
+                    ',', '{', '[', ']', '}'
+                ), '', $message);
+                return $this->respondError($message);
+            } else {
+                $check_counter_name = Counters::where('counter_name', $request->counter_name)
+                    ->where('counter_name', '<>', $counters->counter_name)
+                    ->first();
+                if (empty($check_counter_name)) {
+                    DB::beginTransaction();
+                    try {
+                        $counters->counter_name = $request->counter_name;
+                        $counters->counter_address = $request->counter_address;
+                        $counters->counter_city = $request->counter_city;
+                        $counters->counter_status = $request->counter_status;
+
+                        $counters->save();
+                        DB::commit();
+                        return $this->respondWithSuccess(['counters' => $counters]);
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        return $this->respondError($e->getMessage());
+                    }
+                } else {
+                    return $this->respondError("Counter Name already exist");
+                }
+            }
+        } else {
+            return $this->respondNotFound("Counter not found or not exist");
+        }
+    }
 }
