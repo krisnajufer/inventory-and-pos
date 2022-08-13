@@ -72,5 +72,13 @@ class CountersController extends Controller
         }
     }
 
-    
+    public function detail($slug): JsonResponse
+    {
+        $counters = Counters::where('slug', $slug)->first();
+        if (!empty($counters)) {
+            return $this->respondWithSuccess(['counters' => $counters]);
+        } else {
+            return $this->respondNotFound("Counter not found or not exist");
+        }
+    }
 }
