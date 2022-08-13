@@ -34,9 +34,7 @@ class WarehousesController extends Controller
 
     public function post(Request $request): JsonResponse
     {
-
-        $request_all = $request->all();
-        $validator = $this->validatorHelper($request_all);
+        $validator = $this->validatorHelper($request->all());
 
         if ($validator->fails()) {
             $message = $validator->errors();
@@ -84,8 +82,7 @@ class WarehousesController extends Controller
 
     public function update(Request $request, $slug): JsonResponse
     {
-        $request_all = $request->all();
-        $validator = $this->validatorHelper($request_all);
+        $validator = $this->validatorHelper($request->all());
 
         $warehouses = Warehouses::where('slug', $slug)->first();
         if (!empty($warehouses)) {

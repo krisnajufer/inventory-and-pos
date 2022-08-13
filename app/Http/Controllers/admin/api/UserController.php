@@ -26,15 +26,22 @@ class UserController extends Controller
         return $this->respondWithSuccess(['users' => $users]);
     }
 
-    public function post(Request $request): JsonResponse
+    public function validatorHelper($request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request, [
             'username' => 'required',
             'email' => 'required',
             'password' => 'required|min:8',
             'type' => 'required',
             'status' => 'required'
         ]);
+
+        return $validator;
+    }
+
+    public function post(Request $request): JsonResponse
+    {
+        $validator = $this->validatorHelper($request->all());
         if ($validator->fails()) {
             $message = $validator->errors();
             $message = str_replace(array(
@@ -77,14 +84,8 @@ class UserController extends Controller
     public function update(Request $request, $slug): JsonResponse
     {
         $users = Users::where('slug', $slug)->first();
+        $validator = $this->validatorHelper($request->all());
         if (!empty($users)) {
-            $validator = Validator::make($request->all(), [
-                'username' => 'required',
-                'email' => 'required',
-                'password' => 'required|min:8',
-                'type' => 'required',
-                'status' => 'required'
-            ]);
             if ($validator->fails()) {
                 $message = $validator->errors();
                 $message = str_replace(array(
