@@ -122,4 +122,22 @@ class CountersController extends Controller
             return $this->respondNotFound("Counter not found or not exist");
         }
     }
+
+    public function delete($slug): JsonResponse
+    {
+        $counters = Counters::where('slug', $slug)->first();
+        if (!empty($counters)) {
+            DB::beginTransaction();
+            try {
+                $counters->delete();
+                DB::commit();
+                return $this->respondOk("Successfully deleted counter");
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return $this->respondError($e->getMessage());
+            }
+        } else {
+            return $this->respondNotFound("Counter not found or not exist");
+        }
+    }
 }
