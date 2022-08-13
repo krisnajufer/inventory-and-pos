@@ -20,4 +20,16 @@ class CountersController extends Controller
         $counters = Counters::all();
         return $this->respondWithSuccess(['counters' => $counters]);
     }
+
+    public function validatorHelper($request)
+    {
+        $validator = Validator::make($request, [
+            'counter_name' => 'required',
+            'counter_address' => 'required',
+            'counter_city' => 'required',
+            'counter_status' => 'required',
+        ]);
+
+        return $validator;
+    }
 }
