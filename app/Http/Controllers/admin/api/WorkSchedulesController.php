@@ -93,6 +93,22 @@ class WorkSchedulesController extends Controller
         }
     }
 
+    public function detail($slug): JsonResponse
+    {
+        $work_schedules = WorkSchedules::select('work_schedules.work_schedule_id', 'work_schedules.slug', "e.employee_id", DB::raw("CONCAT(e.firstname,' ',e.lastname) AS fullname"), "w.warehouse_id", "w.warehouse_name", "c.counter_id", "c.counter_name", 'work_schedules.working_date')
+            ->leftjoin('employees as e', 'work_schedules.employee_id', '=', 'e.employee_id')
+            ->leftjoin('warehouses as w', 'work_schedules.warehouse_id', '=', 'w.warehouse_id')
+            ->leftjoin('counters as c', 'work_schedules.counter_id', '=', 'c.counter_id')
+            ->where('work_schedules.slug', $slug)
+            ->first();
+
+        if (!empty($work_schedules)) {
+            return $this->respondWithSuccess(['work_schedules' => $work_schedules]);
+        } else {
+            return $this->respondError("Work Schedule not found or not exist");
+        }
+    }
+
     public function update(Request $request, $slug): JsonResponse
     {
         $validator = $this->validatorHelper($request->all());
