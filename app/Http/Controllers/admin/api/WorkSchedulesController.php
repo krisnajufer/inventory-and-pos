@@ -76,6 +76,7 @@ class WorkSchedulesController extends Controller
                     try {
                         $work_schedules = new WorkSchedules();
                         $work_schedules->work_schedule_id = $work_schedule_id;
+                        $work_schedules->slug = Str::random(16);
                         $work_schedules->employee_id = $request->employee_id;
                         $work_schedules->counter_id = $request->work_place_id;
                         $work_schedules->working_date = $request->working_date;
@@ -92,8 +93,56 @@ class WorkSchedulesController extends Controller
         }
     }
 
-    public function update()
+    public function update(Request $request, $slug): JsonResponse
     {
-        # code...
+        $validator = $this->validatorHelper($request->all());
+
+        $work_schedules = WorkSchedules::where('slug', $slug)->first();
+
+        if ($validator->fails()) {
+            $message = $validator->errors();
+            $message = str_replace(array(
+                '\'', '"',
+                ',', '{', '[', ']', '}'
+            ), '', $message);
+            return $this->respondError($message);
+        } else {
+            if (!empty($work_schedules)) {
+                $word = substr($request->work_place_id, 0, 1);
+                if ($word == 'W') {
+                    DB::beginTransaction();
+                    try {
+                        $work_schedules->employee_id = $request->employee_id;
+                        $work_schedules->warehouse_id = $request->work_place_id;
+                        $work_schedules->counter_id = NULL;
+                        $work_schedules->working_date = $request->working_date;
+
+                        $work_schedules->save();
+                        DB::commit();
+                        return $this->respondWithSuccess(['work_schedules' => $work_schedules]);
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        return $this->respondError($e->getMessage());
+                    }
+                } else {
+                    DB::beginTransaction();
+                    try {
+                        $work_schedules->employee_id = $request->employee_id;
+                        $work_schedules->counter_id = $request->work_place_id;
+                        $work_schedules->warehouse_id = NULL;
+                        $work_schedules->working_date = $request->working_date;
+
+                        $work_schedules->save();
+                        DB::commit();
+                        return $this->respondWithSuccess(['work_schedules' => $work_schedules]);
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        return $this->respondError($e->getMessage());
+                    }
+                }
+            } else {
+                return $this->respondError("Work Schedule not found or not exist");
+            }
+        }
     }
 }
